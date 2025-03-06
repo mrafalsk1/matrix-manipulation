@@ -105,7 +105,7 @@ class CartesianMatrix:
 
     def display_matrix(self):
         """
-        Função para exibir a matriz no formato correto na tela.
+        Função para exibir a matriz.
         """
         if self.matrix is None:
             print("Erro: A matriz ainda não foi criada.")
@@ -139,7 +139,6 @@ class CartesianMatrix:
                 texto_superficie = self.font.render(texto, True, self.colors["black"])
                 self.screen.blit(texto_superficie, (x + 5, y + 5))
 
-        # Atualizar a tela
         pygame.display.flip()
 
     def change_point(self, x, y, color):
@@ -175,26 +174,27 @@ class CartesianMatrix:
 
         return True
 
+    def handle_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    pos_x, pos_y = pygame.mouse.get_pos()
+                    column = pos_x // self.cell_width
+                    row = pos_y // self.cell_width
+
+                    if 0 <= row < self.height and 0 <= column < self.width:
+                        self.change_point(row, column, "green")
+
     def run(self):
         """
         Método principal para executar o programa.
         """
         while self.running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.running = False
-
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:
-                        pos_x, pos_y = pygame.mouse.get_pos()
-                        column = pos_x // self.cell_width
-                        row = pos_y // self.cell_width
-
-                        if 0 <= row < self.height and 0 <= column < self.width:
-                            self.change_point(row, column, "green")
-
+            self.handle_events()
             self.display_matrix()
-
             pygame.time.Clock().tick(30)
 
         pygame.quit()
